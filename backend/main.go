@@ -1,16 +1,20 @@
 package main
 
 import (
-	"log"
+	"job-tracker-backend/db"
+	"job-tracker-backend/handlers"
 
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/jmoiron/sqlx"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	db, err := sqlx.Connect("mysql", "root:Crime_123@tcp(127.0.0.1:3306)/job_tracker?parseTime=true")
-	if err != nil {
-		log.Fatalln(err)
-	}
-	log.Println("Connected successfully:", db)
+	db.Connect()
+	r := gin.Default()
+
+	r.GET("/jobs", handlers.GetJobs)
+	r.POST("/jobs", handlers.CreateJob)
+	r.PUT("/jobs/:id", handlers.UpdateJob)
+	r.DELETE("/jobs/:id", handlers.DeleteJob)
+
+	r.Run(":8080")
 }
